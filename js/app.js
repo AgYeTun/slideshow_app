@@ -13,7 +13,7 @@ uploaderUI.addEventListener("click", () => {
 const createCarousel = (photoList) => {
   const id = "carousel" + Date.now();
   const carousel = document.createElement("div");
-  carousel.id = id
+  carousel.id = id;
   carousel.className = "carousel slide";
 
   let slides = "";
@@ -25,7 +25,9 @@ const createCarousel = (photoList) => {
       </div>
     `;
     indicators += `
-      <button type="button" ${index === 0 && 'class="active"'} data-bs-target="#${id}" data-bs-slide-to="${index}" aria-label="Slide ${
+      <button type="button" ${
+        index === 0 && 'class="active"'
+      } data-bs-target="#${id}" data-bs-slide-to="${index}" aria-label="Slide ${
       index + 1
     }"></button>
     `;
@@ -47,7 +49,7 @@ const createCarousel = (photoList) => {
     <span class="visually-hidden">Next</span>
   </button>
   `;
-  output.append(carousel)
+  output.append(carousel);
 };
 
 // upload photos
@@ -72,4 +74,28 @@ photoUpload.addEventListener("change", (event) => {
 createSlideShow.addEventListener("click", () => {
   const allPhotos = [...document.querySelectorAll(".photo")];
   createCarousel(allPhotos.map((el) => el.src));
+});
+
+// files drag and drop
+
+uploaderUI.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+
+uploaderUI.addEventListener("drop", (event) => {
+  event.preventDefault();
+  console.log([...event.dataTransfer.files]);
+
+  [...event.dataTransfer.files].forEach((file) => {
+    const img = new Image(100, 100);
+
+    const reader = new FileReader();
+    reader.addEventListener("load", (event) => {
+      // console.log(event.target);
+      img.src = event.target.result;
+      img.classList.add("photo");
+      photos.append(img);
+    });
+    reader.readAsDataURL(file);
+  });
 });
